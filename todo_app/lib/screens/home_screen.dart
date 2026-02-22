@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/models/todo.dart';
+import 'package:uuid/uuid.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,7 +11,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _textController = TextEditingController();
-  List<String> todoList = ["Run", "Read", "Gym"];
+  List<Todo> todoList = [];
+  final _uuid = Uuid();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
             final currentTodo = todoList[index];
 
             return Dismissible(
-              key: Key(currentTodo),
+              key: Key(currentTodo.id),
               direction: DismissDirection.endToStart,
               background: Container(
                 color: Colors.red,
@@ -34,12 +37,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   todoList.removeAt(index);
                 });
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("$currentTodo deleted")),
+                  SnackBar(content: Text("${currentTodo.title} deleted")),
                 );
               },
               
               child: ListTile(
-                title: Text(currentTodo),
+                title: Text(currentTodo.title),
               ),
             );
           }
@@ -59,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: () {
                         if(_textController.text.isNotEmpty) {
                           setState(() {
-                            todoList.add(_textController.text);
+                            todoList.add(Todo(id: _uuid.v4(), title: _textController.text));
                           });
                         }
                         _textController.clear();
