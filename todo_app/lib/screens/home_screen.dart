@@ -8,15 +8,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<String> todoList = ["Run", "Read", "Gym"];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-          child: Text('Hello World'),
-        ),
+        appBar: AppBar(title: Text("Todo List"),),
+        body: ListView.builder(
+          itemCount: todoList.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(todoList[index])
+            );
+          }
+          ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            print("button pressed");
+            setState(() {
+              todoList.add("New Todo");
+            });
           },
           child: Icon(
             Icons.add
