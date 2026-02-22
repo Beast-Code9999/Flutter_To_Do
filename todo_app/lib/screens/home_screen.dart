@@ -8,6 +8,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _textController = TextEditingController();
   List<String> todoList = ["Run", "Read", "Gym"];
 
   @override
@@ -24,9 +25,28 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            setState(() {
-              todoList.add("New Todo");
-            });
+              showDialog(
+                context: context, 
+                builder: (context){
+                  return AlertDialog(
+                    title: Text("Add Todo"),
+                    content: TextField(
+                      controller: _textController,
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            todoList.add(_textController.text);
+                          });
+
+                          _textController.clear();
+                          Navigator.pop(context);
+                        }, 
+                        child: Text("Add"))
+                    ],
+                  );
+                });
           },
           child: Icon(
             Icons.add
