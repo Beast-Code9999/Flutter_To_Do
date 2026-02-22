@@ -18,8 +18,29 @@ class _HomeScreenState extends State<HomeScreen> {
         body: ListView.builder(
           itemCount: todoList.length,
           itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(todoList[index])
+            final currentTodo = todoList[index];
+
+            return Dismissible(
+              key: Key(currentTodo),
+              direction: DismissDirection.endToStart,
+              background: Container(
+                color: Colors.red,
+                alignment: Alignment.centerRight,
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Icon(Icons.delete, color: Colors.white,),
+              ),
+              onDismissed: (direction) {
+                setState(() {
+                  todoList.removeAt(index);
+                });
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("$currentTodo deleted")),
+                );
+              },
+              
+              child: ListTile(
+                title: Text(currentTodo),
+              ),
             );
           }
           ),
