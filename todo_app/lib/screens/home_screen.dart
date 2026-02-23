@@ -11,8 +11,18 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _textController = TextEditingController();
-  List<Todo> todoList = [];
   final _uuid = Uuid();
+  List<Todo> todoList = [];
+
+  @override 
+  void initState() {
+    super.initState();
+    todoList = [
+      Todo(id: _uuid.v4(), title: 'Run'),
+      Todo(id: _uuid.v4(), title: 'Gym'),
+      Todo(id: _uuid.v4(), title: 'Read'),
+  ];
+  }
 
   @override
   Widget build(BuildContext context) {
