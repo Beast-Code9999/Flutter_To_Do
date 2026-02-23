@@ -14,79 +14,97 @@ class _HomeScreenState extends State<HomeScreen> {
   final _uuid = Uuid();
   List<Todo> todoList = [];
 
-  @override 
+  @override
   void initState() {
     super.initState();
     todoList = [
       Todo(id: _uuid.v4(), title: 'Run'),
       Todo(id: _uuid.v4(), title: 'Gym'),
       Todo(id: _uuid.v4(), title: 'Read'),
-  ];
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Todo List"),),
-        body: ListView.builder(
-          itemCount: todoList.length,
-          itemBuilder: (context, index) {
-            final currentTodo = todoList[index];
+      appBar: AppBar(title: Text("Todo List")),
+      body: ListView.builder(
+        itemCount: todoList.length,
+        itemBuilder: (context, index) {
+          final currentTodo = todoList[index];
 
-            return Dismissible(
-              key: Key(currentTodo.id),
-              direction: DismissDirection.endToStart,
-              background: Container(
-                color: Colors.red,
-                alignment: Alignment.centerRight,
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Icon(Icons.delete, color: Colors.white,),
-              ),
-              onDismissed: (direction) {
-                setState(() {
-                  todoList.removeAt(index);
-                });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("${currentTodo.title} deleted")),
-                );
-              },
-              
-              child: ListTile(
-                title: Text(currentTodo.title),
-              ),
-            );
-          }
-          ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            showDialog(
-              context: context, 
-              builder: (context){
-                return AlertDialog(
-                  title: Text("Add Todo"),
-                  content: TextField(
-                    controller: _textController,
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        if(_textController.text.isNotEmpty) {
-                          setState(() {
-                            todoList.add(Todo(id: _uuid.v4(), title: _textController.text));
-                          });
-                        }
-                        _textController.clear();
-                        Navigator.pop(context);
-                      }, 
-                      child: Text("Add"))
-                  ],
-                );
+          return Dismissible(
+            key: Key(currentTodo.id),
+            direction: DismissDirection.endToStart,
+            background: Container(
+              color: Colors.red,
+              alignment: Alignment.centerRight,
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Icon(Icons.delete, color: Colors.white),
+            ),
+            onDismissed: (direction) {
+              setState(() {
+                todoList.removeAt(index);
               });
-          },
-          child: Icon(
-            Icons.add
-          ),
-        ),
-      );
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("${currentTodo.title} deleted")),
+              );
+            },
+
+            child: ListTile(
+              title: Text(
+                currentTodo.title,
+                style: TextStyle(
+                  decoration: currentTodo.isCompleted ? TextDecoration.lineThrough : null
+                ),
+                ),
+
+              trailing: Icon(
+                currentTodo.isCompleted
+                    ? Icons.check_circle
+                    : Icons.radio_button_unchecked,
+                color: currentTodo.isCompleted ? Colors.green : Colors.grey,
+              ),
+
+              onTap: () {
+                setState(() {
+                  currentTodo.isCompleted = !currentTodo.isCompleted;
+                });
+              },
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("Add Todo"),
+                content: TextField(controller: _textController),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      if (_textController.text.isNotEmpty) {
+                        setState(() {
+                          todoList.add(
+                            Todo(id: _uuid.v4(), title: _textController.text),
+                          );
+                        });
+                      }
+                      _textController.clear();
+                      Navigator.pop(context);
+                    },
+                    child: Text("Add"),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        child: Icon(Icons.add),
+      ),
+    );
   }
 }
