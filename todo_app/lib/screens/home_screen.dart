@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/models/todo.dart';
 import 'package:uuid/uuid.dart';
+import 'package:todo_app/widgets/todo_item.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,48 +34,25 @@ class _HomeScreenState extends State<HomeScreen> {
         itemBuilder: (context, index) {
           final currentTodo = todoList[index];
 
-          return Dismissible(
-            key: Key(currentTodo.id),
-            direction: DismissDirection.endToStart,
-            background: Container(
-              color: Colors.red,
-              alignment: Alignment.centerRight,
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Icon(Icons.delete, color: Colors.white),
-            ),
-            onDismissed: (direction) {
+          return TodoItem( // imported widget
+            todo: currentTodo, 
+            onTap: () {
+              setState(() {
+                currentTodo.isCompleted = !currentTodo.isCompleted;
+              });
+            }, 
+            onDismissed: () {
               setState(() {
                 todoList.removeAt(index);
               });
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("${currentTodo.title} deleted")),
               );
-            },
-
-            child: ListTile(
-              title: Text(
-                currentTodo.title,
-                style: TextStyle(
-                  decoration: currentTodo.isCompleted ? TextDecoration.lineThrough : null
-                ),
-                ),
-
-              trailing: Icon(
-                currentTodo.isCompleted
-                    ? Icons.check_circle
-                    : Icons.radio_button_unchecked,
-                color: currentTodo.isCompleted ? Colors.green : Colors.grey,
-              ),
-
-              onTap: () {
-                setState(() {
-                  currentTodo.isCompleted = !currentTodo.isCompleted;
-                });
-              },
-            ),
+            }
           );
         },
       ),
+      
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
