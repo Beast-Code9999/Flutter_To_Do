@@ -29,32 +29,65 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Todo List")),
-      body: ListView.builder(
+      body: ListView.builder( // builds the list
         itemCount: todoList.length,
         itemBuilder: (context, index) {
           final currentTodo = todoList[index];
 
           return TodoItem( // imported widget
             todo: currentTodo, 
-            onTap: () {
-              setState(() {
+            onTap: () { 
+              setState(() { // toggle between isComplted and not isComplited
                 currentTodo.isCompleted = !currentTodo.isCompleted;
               });
             }, 
             onDismissed: () {
-              setState(() {
+              setState(() { // Remove todo item
                 todoList.removeAt(index);
               });
-              ScaffoldMessenger.of(context).showSnackBar(
+              ScaffoldMessenger.of(context).showSnackBar( // show message of removed item
                 SnackBar(content: Text("${currentTodo.title} deleted")),
               );
-            }
+            },
+            onLongPress: () { // Edit on long press
+              _textController.text = currentTodo.title; // Prefil the title with currentTodo
+              showDialog( 
+                context: context, 
+                builder: (context) {
+                  return AlertDialog( 
+                    title: Text("Edit Todo"), 
+                    content: TextField(controller: _textController),
+                    actions: [
+                      TextButton( // Cancel Dialog
+                        onPressed: () {
+                          Navigator.pop(context);
+                          _textController.clear();
+                        },
+                        child: Text("Cancel")
+                      ),
+                      TextButton( // Save Dialog and update the text todo.title with with the text in textController
+                        onPressed: () {
+                          if (_textController.text.isNotEmpty) {
+                            setState(() {
+                              currentTodo.title = _textController.text;
+                              
+                            });
+                            _textController.clear();
+                            Navigator.pop(context);
+                          }
+                        }, 
+                        child: Text("Save")
+                      )
+                    ],
+                  );  
+              });
+            },
           );
         },
       ),
-      
+
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () { // Add Todo Item
           showDialog(
             context: context,
             builder: (context) {
@@ -85,4 +118,15 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
 }
+
+
+
+

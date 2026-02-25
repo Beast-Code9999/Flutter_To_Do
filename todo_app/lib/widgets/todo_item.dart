@@ -5,12 +5,14 @@ class TodoItem extends StatelessWidget {
   final Todo todo;
   final VoidCallback onTap;
   final VoidCallback onDismissed;
+  final VoidCallback onLongPress;
 
   const TodoItem({
     super.key,
     required this.todo,
     required this.onTap,
     required this.onDismissed,
+    required this.onLongPress,
   });
 
   @override Widget build(BuildContext context) {
@@ -47,6 +49,8 @@ class TodoItem extends StatelessWidget {
               ),
 
               onTap: onTap,
+
+              onLongPress: onLongPress,
 
                 // setState(() {
                 //   currentTodo.isCompleted = !currentTodo.isCompleted;
