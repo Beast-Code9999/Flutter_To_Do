@@ -15,7 +15,7 @@ class TodoApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      home: const HomeScreen(), // the Stateful Widget where the magic happens
     );
   }
 }

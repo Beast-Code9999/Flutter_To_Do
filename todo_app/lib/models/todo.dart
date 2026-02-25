@@ -1,4 +1,4 @@
-class Todo {
+class Todo { // Todo class is used as the cookie cutter of todo cookies
   String id;
   String title;
   bool isCompleted;
